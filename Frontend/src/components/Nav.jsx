@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaTimes, FaShoppingCart, FaUserCircle, FaSearch } from "react-icons/fa";
 import { CiMenuFries } from "react-icons/ci";
+import { FiChevronDown } from "react-icons/fi";
 import ekart from "../assets/logo1.jpg";
-import { motion } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 import LoginModal from './LoginModal';
 
@@ -21,15 +21,20 @@ const Nav = () => {
 
   const [click, setClick] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(true);
+  const [open, setOpen] = useState(false);
+
   const profileRef = useRef();
+  const loginDropdownRef = useRef();
 
   const handleClick = () => setClick(!click);
-  const toggleProfileMenu = () => setShowProfileMenu(!showProfileMenu);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setShowProfileMenu(false);
+      }
+      if (loginDropdownRef.current && !loginDropdownRef.current.contains(e.target)) {
+        setOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -80,40 +85,51 @@ const Nav = () => {
 
             {/* Profile / Login */}
             {isLoggedIn ? (
-              <div className="relative group">
+              <div className="relative group" ref={profileRef}>
                 <button className="flex items-center gap-2 focus:outline-none">
                   <FaUserCircle size={32} />
                 </button>
-
                 <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md hidden group-hover:block z-50 border border-gray-200">
                   <div className="px-4 py-2 border-b border-gray-300 text-sm font-medium capitalize">
                     Welcome, {username}
                   </div>
-
                   <Link to="/myorder">
-                    <button
-                      className="w-full text-left px-4 py-2 hover:bg-blue-100 border-b border-gray-200"
-                    >
-                      My Orders
-                    </button>
+                    <button className="w-full text-left px-4 py-2 hover:bg-blue-100 border-b border-gray-200">My Orders</button>
                   </Link>
-
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 hover:bg-blue-100"
-                  >
-                    Logout
-                  </button>
+                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-blue-100">Logout</button>
                 </div>
-
               </div>
             ) : (
-              <button
-                onClick={() => setShowModal(true)}
-                className="bg-white border border-indigo-600 text-indigo-600 px-4 py-2 rounded hover:bg-indigo-600 hover:text-white transition duration-200"
-              >
-                Login
-              </button>
+              <div className="relative" ref={loginDropdownRef}>
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="flex items-center border border-indigo-600 text-indigo-600 px-4 py-2 rounded hover:bg-indigo-600 hover:text-white transition"
+                >
+                  Login
+                  <FiChevronDown className="ml-2" />
+                </button>
+
+                {open && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
+                    <button
+                      onClick={() => {
+                        setShowModal(true);
+                        setOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-indigo-100 transition"
+                    >
+                      User Login
+                    </button>
+                    <Link
+                      to="/seller/login"
+                      onClick={() => setOpen(false)}
+                      className="block w-full text-left px-4 py-2 hover:bg-indigo-100 transition"
+                    >
+                      Seller Login
+                    </Link>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -156,10 +172,10 @@ const Nav = () => {
             {/* Profile / Login */}
             {isLoggedIn ? (
               <div className="mt-3">
-                <div className="text-gray-200 mb-2">Welcome, <b>{username ? username : 'Guest'}</b></div>
+                <div className="text-gray-200 mb-2">Welcome, <b>{username}</b></div>
                 <button
                   onClick={() => {
-                    logout();
+                    handleLogout();
                     setClick(false);
                   }}
                   className="block w-full text-left px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
@@ -168,15 +184,40 @@ const Nav = () => {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => {
-                  setShowModal(true);
-                  setClick(false);
-                }}
-                className="block w-full px-4 py-2 border-2 border-indigo-600 text-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition"
-              >
-                Login
-              </button>
+              <div className="relative" ref={loginDropdownRef}>
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="flex items-center w-full px-4 py-2 border-2 border-indigo-600 text-indigo-600 rounded hover:bg-indigo-600 hover:text-white transition"
+                >
+                  Login
+                  <FiChevronDown className="ml-2" />
+                </button>
+
+                {open && (
+                  <div className="mt-2 w-full bg-white border border-gray-200 rounded shadow-lg z-50">
+                    <button
+                      onClick={() => {
+                        setShowModal(true);
+                        setClick(false);
+                        setOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-indigo-100 transition"
+                    >
+                      User Login
+                    </button>
+                    <Link
+                      to="/seller/login"
+                      onClick={() => {
+                        setClick(false);
+                        setOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-indigo-100 transition"
+                    >
+                      Seller Login
+                    </Link>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         )}
