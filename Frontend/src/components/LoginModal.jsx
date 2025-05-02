@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
+import {toast, ToastContainer} from 'react-toastify';
 
 const LoginModal = ({ closeModal }) => {
   const [mode, setMode] = useState('login'); // 'login' or 'signup'
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAppContext(); // Access the login function from context
+  const { handleLogin } = useAppContext();
 
   const handleAction = (e) => {
     e.preventDefault();
     if (username === 'admin' && password === 'admin') {
-      alert(`${mode === 'login' ? 'Login' : 'Signup'} Successful!`);
+       // toast.success(`${mode === 'login' ? 'Login' : 'Signup'} Successful!`);
+       toast.success("Login Successfully....");
+      handleLogin(username);  
       closeModal();
     } else {
-      alert('Invalid username or password!');
+      toast.error("Login Credentials Invalid...!");
     }
   };
 
   return (
+    <>
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-96 p-6 shadow-lg relative">
         <button
@@ -76,6 +80,19 @@ const LoginModal = ({ closeModal }) => {
         </form>
       </div>
     </div>
+    <ToastContainer
+        position="top-left"
+        marginTop="30px"
+        autoClose={3500}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        draggable={true}
+        className="custom-toast"
+        toastClassName="custom-toast-item"
+      />
+    </>
   );
 };
 

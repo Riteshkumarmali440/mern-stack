@@ -16,11 +16,11 @@ const Nav = () => {
     username,
     showModal,
     setShowModal,
-    logout
+    handleLogout
   } = useAppContext();
 
   const [click, setClick] = useState(false);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(true);
   const profileRef = useRef();
 
   const handleClick = () => setClick(!click);
@@ -80,37 +80,37 @@ const Nav = () => {
 
             {/* Profile / Login */}
             {isLoggedIn ? (
-              <div ref={profileRef} className="relative">
-                <button onClick={toggleProfileMenu} className="text-4xl text-indigo-600 hover:text-indigo-800">
-                  <FaUserCircle />
+              <div className="relative group">
+                <button className="flex items-center gap-2 focus:outline-none">
+                  <FaUserCircle size={32} />
                 </button>
-                {showProfileMenu && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg py-2 z-50"
-                  >
-                    <div className="px-4 py-2 border-b text-gray-800">
-                    
-                      Welcome, <b>{username ? username : 'Guest'}</b>
-                    </div>
+
+                <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md hidden group-hover:block z-50 border border-gray-200">
+                  <div className="px-4 py-2 border-b border-gray-300 text-sm font-medium capitalize">
+                    Welcome, {username}
+                  </div>
+
+                  <Link to="/myorder">
                     <button
-                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      onClick={() => {
-                        logout();
-                        setShowProfileMenu(false);
-                      }}
+                      className="w-full text-left px-4 py-2 hover:bg-blue-100 border-b border-gray-200"
                     >
-                      Logout
+                      My Orders
                     </button>
-                  </motion.div>
-                )}
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 hover:bg-blue-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+
               </div>
             ) : (
               <button
                 onClick={() => setShowModal(true)}
-                className="px-4 py-1 border-2 border-indigo-600 text-indigo-600 rounded-md hover:bg-indigo-600 hover:text-white transition"
+                className="bg-white border border-indigo-600 text-indigo-600 px-4 py-2 rounded hover:bg-indigo-600 hover:text-white transition duration-200"
               >
                 Login
               </button>
@@ -121,7 +121,7 @@ const Nav = () => {
           <div className="md:hidden flex items-center gap-3">
             <Link to="/cartItems" className="relative text-2xl text-indigo-600 hover:text-indigo-800">
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {totalCartItems }
+                {totalCartItems}
               </span>
               <FaShoppingCart />
             </Link>
@@ -131,7 +131,7 @@ const Nav = () => {
           </div>
         </div>
 
-        {/* Mobile Nav Links */}   
+        {/* Mobile Nav Links */}
         {click && (
           <div className="block md:hidden bg-slate-900 text-white p-6 space-y-4">
             <Link to="/home" className="block text-lg font-medium hover:text-indigo-400" onClick={handleClick}>Home</Link>

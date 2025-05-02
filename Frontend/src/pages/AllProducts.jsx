@@ -35,7 +35,7 @@ const AllProducts = () => {
                   <img
                     src={product.images[0]}
                     alt={product.name}
-                    className="w-full h-56 object-cover group-hover:opacity-90 transition duration-300"
+                   className="w-full h-50 object-cover object-center group-hover:opacity-90 transition duration-300"
                   />
                 </Link>
 

@@ -1,9 +1,20 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { toast } from 'react-toastify';
-import vegetable from "../assets/vegetable1.jpg";
-import fruits from "../assets/fruits.jpg";
 import grocery from "../assets/grocery.jpg";
 import other from "../assets/other.jpg";
+import onion from "../assets/onion.jpg";
+import bhendi from "../assets/bhendi.jpg";
+import beans from "../assets/beans.jpg";
+import bitter from "../assets/bitter.jpg";
+import bottle from "../assets/bottle.jpg";
+import potato from "../assets/potato1.jpg";
+import palak from "../assets/palak.jpg";
+import ridge from "../assets/ridge.jpg";
+import brinjal from "../assets/brinjal1.jpg";
+import apple from "../assets/apple.jpg";
+import banana from "../assets/banana.jpg";
+import mango from "../assets/mango.jpg";
+import poem from "../assets/poem.jpg";
 
 const AppContext = createContext();
 
@@ -19,12 +30,12 @@ export const AppProvider = ({ children }) => {
   const [products, setProducts] = useState([
     {
       id: 1,
-      name: 'Fresh Vegetables',
-      category: 'Groceries',
+      name: 'Onion',
+      category: 'Vegetables',
       price: 25,
       offerPrice: 20,
       rating: 4.5,
-      images: [vegetable],
+      images: [onion],
       description: [
         'High-quality fresh vegetables',
         'Great for salads and cooking',
@@ -32,13 +43,125 @@ export const AppProvider = ({ children }) => {
       ],
     },
     {
-      id: 2,
-      name: 'Juicy Fruits',
+        id: 2,
+        name: 'Potato',
+        category: 'Vegetables',
+        price: 25,
+        offerPrice: 20,
+        rating: 4.5,
+        images: [potato],
+        description: [
+          'High-quality fresh vegetables',
+          'Great for salads and cooking',
+          'Locally sourced',
+        ],
+      },
+      {
+        id: 3,
+        name: 'Bhendi',
+        category: 'Vegetables',
+        price: 25,
+        offerPrice: 20,
+        rating: 4.5,
+        images: [bhendi],
+        description: [
+          'High-quality fresh vegetables',
+          'Great for salads and cooking',
+          'Locally sourced',
+        ],
+      },
+      {
+        id: 4,
+        name: 'Beans',
+        category: 'Vegetables',
+        price: 25,
+        offerPrice: 20,
+        rating: 4.5,
+        images: [beans],
+        description: [
+          'High-quality fresh vegetables',
+          'Great for salads and cooking',
+          'Locally sourced',
+        ],
+      },
+      {
+        id: 5,
+        name: 'Bitter Gourd',
+        category: 'Vegetables',
+        price: 25,
+        offerPrice: 20,
+        rating: 4.5,
+        images: [bitter],
+        description: [
+          'High-quality fresh vegetables',
+          'Great for salads and cooking',
+          'Locally sourced',
+        ],
+      },
+      {
+        id: 6,
+        name: 'Ridge Gourd',
+        category: 'Vegetables',
+        price: 25,
+        offerPrice: 20,
+        rating: 4.5,
+        images: [ridge],
+        description: [
+          'High-quality fresh vegetables',
+          'Great for salads and cooking',
+          'Locally sourced',
+        ],
+      },
+      {
+        id: 7,
+        name: 'Bottle Gourd',
+        category: 'Vegetables',
+        price: 25,
+        offerPrice: 20,
+        rating: 4.5,
+        images: [bottle],
+        description: [
+          'High-quality fresh vegetables',
+          'Great for salads and cooking',
+          'Locally sourced',
+        ],
+      },
+      {
+        id: 8,
+        name: 'Brinjal',
+        category: 'Vegetables',
+        price: 25,
+        offerPrice: 20,
+        rating: 4.5,
+        images: [brinjal],
+        description: [
+          'High-quality fresh vegetables',
+          'Great for salads and cooking',
+          'Locally sourced',
+        ],
+      },
+      {
+        id: 9,
+        name: 'Palak',
+        category: 'Vegetables',
+        price: 25,
+        offerPrice: 20,
+        rating: 4.5,
+        images: [palak],
+        description: [
+          'High-quality fresh vegetables',
+          'Great for salads and cooking',
+          'Locally sourced',
+        ],
+      },
+    {
+      id: 10,
+      name: 'Mango',
       category: 'Fruits',
       price: 40,
       offerPrice: 35,
       rating: 4.8,
-      images: [fruits],
+      images: [mango],
       description: [
         'Sweet and juicy fruits',
         'Perfect for snacking',
@@ -46,7 +169,49 @@ export const AppProvider = ({ children }) => {
       ],
     },
     {
-      id: 3,
+        id: 11,
+        name: 'Banana',
+        category: 'Fruits',
+        price: 50,
+        offerPrice: 35,
+        rating: 4.8,
+        images: [banana],
+        description: [
+          'Sweet and juicy fruits',
+          'Perfect for snacking',
+          'Organic and fresh',
+        ],
+      },
+      {
+        id: 12,
+        name: 'Apple',
+        category: 'Fruits',
+        price: 45,
+        offerPrice: 35,
+        rating: 4.8,
+        images: [apple],
+        description: [
+          'Sweet and juicy fruits',
+          'Perfect for snacking',
+          'Organic and fresh',
+        ],
+      },
+      {
+        id: 13,
+        name: 'PoemGranate',
+        category: 'Fruits',
+        price: 40,
+        offerPrice: 35,
+        rating: 4.8,
+        images: [poem],
+        description: [
+          'Sweet and juicy fruits',
+          'Perfect for snacking',
+          'Organic and fresh',
+        ],
+      },
+    {
+      id: 14,
       name: 'Grocery',
       category: 'Grocery',
       price: 60,
@@ -60,7 +225,7 @@ export const AppProvider = ({ children }) => {
       ],
     },
     {
-      id: 4,
+      id: 15,
       name: 'Other',
       category: 'Other',
       price: 80,
