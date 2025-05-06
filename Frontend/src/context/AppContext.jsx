@@ -25,7 +25,8 @@ export const AppProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState(null);
+  const [name, setName] = useState(null);
+  const [userImage, setUserImage] = useState(null);
 
   const [products, setProducts] = useState([
     {
@@ -284,14 +285,15 @@ const totalCartItems = Object.values(cartItems).reduce((total, quantity) => tota
 
 
 
-  const handleLogin = (username) => {
+  const handleLogin = (name, avatar) => {
     setIsLoggedIn(true);
-    setUsername(username);
+    setName(name);
+  setUserImage(`http://localhost:5000/uploads/${avatar}`);
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUsername('');
+    setName('');
   };
 
   return (
@@ -304,12 +306,14 @@ const totalCartItems = Object.values(cartItems).reduce((total, quantity) => tota
         totalCartItems,
         handleRemoveFromCart,
         isLoggedIn,
-        username,
+        name,
         showModal,
         setShowModal,
         handleLogin,
         handleLogout,
-        products
+        products,
+        userImage,
+        setUserImage
       }}
     >
       {children}

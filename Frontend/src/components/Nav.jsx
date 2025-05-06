@@ -13,14 +13,15 @@ const Nav = () => {
     setSearchTerm,
     totalCartItems,
     isLoggedIn,
-    username,
+    name,
+    userImage,
     showModal,
     setShowModal,
     handleLogout
   } = useAppContext();
 
   const [click, setClick] = useState(false);
-  const [showProfileMenu, setShowProfileMenu] = useState(true);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [open, setOpen] = useState(false);
 
   const profileRef = useRef();
@@ -87,11 +88,21 @@ const Nav = () => {
             {isLoggedIn ? (
               <div className="relative group" ref={profileRef}>
                 <button className="flex items-center gap-2 focus:outline-none">
-                  <FaUserCircle size={32} />
+                {userImage ? (
+        <img
+       src={userImage} alt="User"
+
+        onError={() => console.log("Image failed to load:", userImage)}
+          
+          className="w-10 h-10 rounded-full object-cover border border-gray-300"
+        />
+      ) : (
+        <FaUserCircle size={32} />
+      )}
                 </button>
                 <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md hidden group-hover:block z-50 border border-gray-200">
                   <div className="px-4 py-2 border-b border-gray-300 text-sm font-medium capitalize">
-                    Welcome, {username}
+                    Welcome, {name}
                   </div>
                   <Link to="/myorder">
                     <button className="w-full text-left px-4 py-2 hover:bg-blue-100 border-b border-gray-200">My Orders</button>
@@ -172,7 +183,7 @@ const Nav = () => {
             {/* Profile / Login */}
             {isLoggedIn ? (
               <div className="mt-3">
-                <div className="text-gray-200 mb-2">Welcome, <b>{username}</b></div>
+                <div className="text-gray-200 mb-2">Welcome, <b>{name}</b></div>
                 <button
                   onClick={() => {
                     handleLogout();
