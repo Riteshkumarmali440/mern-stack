@@ -23,11 +23,39 @@ const AddProduct = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Product Added:', product);
-    // here you'd trigger your API call to add product
+  
+    try {
+      const formData = new FormData();
+      product.images.forEach((image, index) => {
+        const file = document.getElementById(`image${index}`).files[0];
+        if (file) {
+          formData.append('images', file);
+        }
+      });
+  
+      formData.append('name', product.name);
+      formData.append('description', product.description);
+      formData.append('category', product.category);
+      formData.append('price', product.price);
+      formData.append('offerPrice', product.offerPrice);
+      formData.append('instock', true); // or set dynamically if needed
+      
+      const response = await fetch('http://localhost:5000/api/product/add-product', {
+        
+        method: 'POST',
+        body: formData
+      });
+  
+      const result = await response.json();
+      console.log('Product Added:', result);
+  
+    } catch (error) {
+      console.error('Error adding product:', error);
+    }
   };
+  
 
   return (
     <div className="py-10 flex flex-col justify-between bg-white">

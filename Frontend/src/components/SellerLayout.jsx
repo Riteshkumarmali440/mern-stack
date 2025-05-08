@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FiShoppingCart, FiHome, FiLogOut, FiUser } from "react-icons/fi";
 import ekart from "../assets/ekart.jpg"
+import { useAppContext } from "../context/AppContext";
 
 const SellerLayout = () => {
   const navigate = useNavigate();
-
+  const {name}=useAppContext();
   const handleLogout = () => {
-    localStorage.removeItem("sellerToken"); // or your auth session key
+    localStorage.removeItem("name"); // or your auth session key
     navigate("/seller/login");
   };
 
@@ -80,7 +81,7 @@ const SellerLayout = () => {
       <div className="flex-1 flex flex-col h-min-screen">
         {/* Header */}
         <header className="flex items-center justify-between bg-white shadow px-6 py-7 border-b border-gray-200">
-          <h1 className="text-xl font-semibold text-gray-800">Welcome Seller</h1>
+          <h1 className="text-xl font-semibold text-gray-800">Welcome {name}</h1>
 
           {/* Profile & Logout in Header */}
           <div className="flex items-center space-x-6">

@@ -1,7 +1,9 @@
 import React from "react";
 import { FiPackage, FiList, FiShoppingCart, FiClock } from "react-icons/fi";
+import { useAppContext } from '../context/AppContext';
 
 const SellerDashboard = () => {
+  const {name} = useAppContext();
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Seller Dashboard</h1>
@@ -11,7 +13,7 @@ const SellerDashboard = () => {
         <div className="p-5 bg-white shadow rounded flex items-center gap-4 hover:shadow-lg transition">
           <FiPackage className="text-indigo-600 text-3xl" />
           <div>
-            <p className="text-gray-600">Total Products</p>
+            <p className="text-gray-600">Total Products {name}</p>
             <h2 className="text-2xl font-bold text-gray-800">156</h2>
           </div>
         </div>

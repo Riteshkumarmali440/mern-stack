@@ -9,6 +9,8 @@ import { dirname } from 'path';
 import fs from 'fs';
 import multer from 'multer';
 import userRoutes from './routes/userRoutes.js';
+import sellerRoutes from './routes/sellerRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
 // Fix __dirname for ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -40,13 +42,16 @@ if (!fs.existsSync(uploadDir)) {
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
 }).then(() => console.log('MongoDB Connected'))
   .catch(err => console.error('MongoDB connection failed:', err));
 
 // Routes
 app.use('/api/users', userRoutes);
+
+app.use('/api/seller', sellerRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/getproduct', productRoutes);
+
 
 // Root route
 app.get('/', (req, res) => {

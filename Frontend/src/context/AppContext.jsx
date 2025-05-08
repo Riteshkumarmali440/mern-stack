@@ -1,20 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { toast } from 'react-toastify';
-import grocery from "../assets/grocery.jpg";
-import other from "../assets/other.jpg";
-import onion from "../assets/onion.jpg";
-import bhendi from "../assets/bhendi.jpg";
-import beans from "../assets/beans.jpg";
-import bitter from "../assets/bitter.jpg";
-import bottle from "../assets/bottle.jpg";
-import potato from "../assets/potato1.jpg";
-import palak from "../assets/palak.jpg";
-import ridge from "../assets/ridge.jpg";
-import brinjal from "../assets/brinjal1.jpg";
-import apple from "../assets/apple.jpg";
-import banana from "../assets/banana.jpg";
-import mango from "../assets/mango.jpg";
-import poem from "../assets/poem.jpg";
+import axiosInstance from "axios";
+
 
 const AppContext = createContext();
 
@@ -27,230 +13,53 @@ export const AppProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [name, setName] = useState(null);
   const [userImage, setUserImage] = useState(null);
+  const [products, setProducts] = useState([]);
+ 
+  // const fetchProducts = async () => {
+  //   try {
+  //     const res = await axios.get('http://localhost:5000/api/getproduct/get-products');
+  //     setProducts(res.data);
+  //   } catch (error) {
+  //     console.error('Failed to fetch products:', error);
+  //   }
+  // };
 
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: 'Onion',
-      category: 'Vegetables',
-      price: 25,
-      offerPrice: 20,
-      rating: 4.5,
-      images: [onion],
-      description: [
-        'High-quality fresh vegetables',
-        'Great for salads and cooking',
-        'Locally sourced',
-      ],
-    },
-    {
-        id: 2,
-        name: 'Potato',
-        category: 'Vegetables',
-        price: 25,
-        offerPrice: 20,
-        rating: 4.5,
-        images: [potato],
-        description: [
-          'High-quality fresh vegetables',
-          'Great for salads and cooking',
-          'Locally sourced',
-        ],
-      },
-      {
-        id: 3,
-        name: 'Bhendi',
-        category: 'Vegetables',
-        price: 25,
-        offerPrice: 20,
-        rating: 4.5,
-        images: [bhendi],
-        description: [
-          'High-quality fresh vegetables',
-          'Great for salads and cooking',
-          'Locally sourced',
-        ],
-      },
-      {
-        id: 4,
-        name: 'Beans',
-        category: 'Vegetables',
-        price: 25,
-        offerPrice: 20,
-        rating: 4.5,
-        images: [beans],
-        description: [
-          'High-quality fresh vegetables',
-          'Great for salads and cooking',
-          'Locally sourced',
-        ],
-      },
-      {
-        id: 5,
-        name: 'Bitter Gourd',
-        category: 'Vegetables',
-        price: 25,
-        offerPrice: 20,
-        rating: 4.5,
-        images: [bitter],
-        description: [
-          'High-quality fresh vegetables',
-          'Great for salads and cooking',
-          'Locally sourced',
-        ],
-      },
-      {
-        id: 6,
-        name: 'Ridge Gourd',
-        category: 'Vegetables',
-        price: 25,
-        offerPrice: 20,
-        rating: 4.5,
-        images: [ridge],
-        description: [
-          'High-quality fresh vegetables',
-          'Great for salads and cooking',
-          'Locally sourced',
-        ],
-      },
-      {
-        id: 7,
-        name: 'Bottle Gourd',
-        category: 'Vegetables',
-        price: 25,
-        offerPrice: 20,
-        rating: 4.5,
-        images: [bottle],
-        description: [
-          'High-quality fresh vegetables',
-          'Great for salads and cooking',
-          'Locally sourced',
-        ],
-      },
-      {
-        id: 8,
-        name: 'Brinjal',
-        category: 'Vegetables',
-        price: 25,
-        offerPrice: 20,
-        rating: 4.5,
-        images: [brinjal],
-        description: [
-          'High-quality fresh vegetables',
-          'Great for salads and cooking',
-          'Locally sourced',
-        ],
-      },
-      {
-        id: 9,
-        name: 'Palak',
-        category: 'Vegetables',
-        price: 25,
-        offerPrice: 20,
-        rating: 4.5,
-        images: [palak],
-        description: [
-          'High-quality fresh vegetables',
-          'Great for salads and cooking',
-          'Locally sourced',
-        ],
-      },
-    {
-      id: 10,
-      name: 'Mango',
-      category: 'Fruits',
-      price: 40,
-      offerPrice: 35,
-      rating: 4.8,
-      images: [mango],
-      description: [
-        'Sweet and juicy fruits',
-        'Perfect for snacking',
-        'Organic and fresh',
-      ],
-    },
-    {
-        id: 11,
-        name: 'Banana',
-        category: 'Fruits',
-        price: 50,
-        offerPrice: 35,
-        rating: 4.8,
-        images: [banana],
-        description: [
-          'Sweet and juicy fruits',
-          'Perfect for snacking',
-          'Organic and fresh',
-        ],
-      },
-      {
-        id: 12,
-        name: 'Apple',
-        category: 'Fruits',
-        price: 45,
-        offerPrice: 35,
-        rating: 4.8,
-        images: [apple],
-        description: [
-          'Sweet and juicy fruits',
-          'Perfect for snacking',
-          'Organic and fresh',
-        ],
-      },
-      {
-        id: 13,
-        name: 'PoemGranate',
-        category: 'Fruits',
-        price: 40,
-        offerPrice: 35,
-        rating: 4.8,
-        images: [poem],
-        description: [
-          'Sweet and juicy fruits',
-          'Perfect for snacking',
-          'Organic and fresh',
-        ],
-      },
-    {
-      id: 14,
-      name: 'Grocery',
-      category: 'Grocery',
-      price: 60,
-      offerPrice: 45,
-      rating: 4.8,
-      images: [grocery],
-      description: [
-        'Best Grocery',
-        'Perfect',
-        'Organic and fresh',
-      ],
-    },
-    {
-      id: 15,
-      name: 'Other',
-      category: 'Other',
-      price: 80,
-      offerPrice: 65,
-      rating: 4.8,
-      images: [other],
-      description: [
-        'Best Milk Products',
-        'Perfect',
-        'Organic and fresh',
-      ],
-    },
-  ]);
+  const fetchProducts = async () => {
+    try {
+      const res = await axiosInstance.get('http://localhost:5000/api/getproduct/get-products');
+      console.log(res.data); // Log the response to check the structure
+      if (Array.isArray(res.data)) {
+        setProducts(res.data); // Set the products array if the response is correct
+      } else {
+        setProducts(res.data.products || []); // In case the response is an object
+      }
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
+    }
+  };
+  
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const savedCartItems = localStorage.getItem('cartItems');
     if (savedCartItems) {
       setCartItems(JSON.parse(savedCartItems));
     }
+
+    const storedName = localStorage.getItem("sellerName"); // optional: restore name
+  if (storedName) {
+    setName(storedName);
+  }
   }, []);
 
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
+
+  
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
@@ -289,11 +98,13 @@ const totalCartItems = Object.values(cartItems).reduce((total, quantity) => tota
     setIsLoggedIn(true);
     setName(name);
   setUserImage(`http://localhost:5000/uploads/${avatar}`);
+  localStorage.setItem("name", name); 
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setName('');
+    localStorage.removeItem("name");
   };
 
   return (
