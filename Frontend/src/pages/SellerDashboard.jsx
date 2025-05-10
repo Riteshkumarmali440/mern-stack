@@ -3,7 +3,8 @@ import { FiPackage, FiList, FiShoppingCart, FiClock } from "react-icons/fi";
 import { useAppContext } from '../context/AppContext';
 
 const SellerDashboard = () => {
-  const {name} = useAppContext();
+  const {name, products, cartItems} = useAppContext();
+  const cartItemCount = Object.values(cartItems).reduce((sum, qty) => sum + qty, 0);
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Seller Dashboard</h1>
@@ -14,7 +15,7 @@ const SellerDashboard = () => {
           <FiPackage className="text-indigo-600 text-3xl" />
           <div>
             <p className="text-gray-600">Total Products {name}</p>
-            <h2 className="text-2xl font-bold text-gray-800">156</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{products.length}</h2>
           </div>
         </div>
 
@@ -22,7 +23,7 @@ const SellerDashboard = () => {
           <FiList className="text-pink-500 text-3xl" />
           <div>
             <p className="text-gray-600">Product Categories</p>
-            <h2 className="text-2xl font-bold text-gray-800">7</h2>
+            <h2 className="text-2xl font-bold text-gray-800">4</h2>
           </div>
         </div>
 
@@ -30,7 +31,7 @@ const SellerDashboard = () => {
           <FiShoppingCart className="text-green-500 text-3xl" />
           <div>
             <p className="text-gray-600">Total Orders</p>
-            <h2 className="text-2xl font-bold text-gray-800">89</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{cartItems.length}</h2>
           </div>
         </div>
 

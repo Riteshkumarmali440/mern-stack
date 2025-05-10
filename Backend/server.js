@@ -11,7 +11,7 @@ import multer from 'multer';
 import userRoutes from './routes/userRoutes.js';
 import sellerRoutes from './routes/sellerRoutes.js';
 import productRoutes from './routes/productRoutes.js';
-import nodemailer from 'nodemailer';
+import newsLetterRoute from './routes/newsLetterRoute.js';
 
 
 // Fix __dirname for ES module
@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.FRONTEND_UR,
   credentials: true,
 }));
 app.use(cookieParser());
@@ -54,39 +54,7 @@ app.use('/api/seller', sellerRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/getproduct', productRoutes);
 app.use('/api/stockproduct', productRoutes);
-
-
-app.post("/send-email", async (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: "Email is required." });
-  }
-
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Newsletter Subscription Confirmation",
-      text: "Thank you for subscribing to our newsletter!",
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: "Email sent successfully!" });
-  } catch (error) {
-    console.error("Error sending email:", error);
-    res.status(500).json({ message: "Failed to send email." });
-  }
-});
+app.use('/api', newsLetterRoute);
 
 
 // Root route

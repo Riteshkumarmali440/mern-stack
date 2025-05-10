@@ -4,23 +4,33 @@ import axios from 'axios';
 
 const NewsLetter = () => {
 
-    const [email, setEmail] = useState("");
-    const [status, setStatus] = useState("");
+    const [email, setEmail] = useState('');
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            const response = await axios.post("http://localhost:5000/send-email", {
-                email,
-            });
-
-            setStatus(response.data.message);
-            setEmail("");
-        } catch (error) {
-            console.error("Error sending email:", error);
-            setStatus("Failed to send email.");
-        }
+      e.preventDefault();
+  
+      if (!email) {
+        alert("Please enter an email.");
+        return;
+      }
+  
+      try {
+        const response = await axios.post('http://localhost:5000/api/send-email', 
+          { email }, 
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true
+          }
+        );
+  
+        console.log(response.data);
+        alert("Newsletter email sent!");
+      } catch (error) {
+        console.error("Error sending email:", error);
+        alert("Failed to send email.");
+      }
     };
 
 
