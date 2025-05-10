@@ -8,11 +8,8 @@ const Cart = () => {
   const cartEntries = Object.entries(cartItems);
 
   const totalPrice = cartEntries.reduce((total, [productId, quantity]) => {
-    const product = products.find((p) => p.id === parseInt(productId));
-    if (product) {
-      return total + product.offerPrice * quantity;
-    }
-    return total;
+    const product = products.find((p) => p._id === productId);
+    return product ? total + product.offerPrice * quantity : total;
   }, 0);
 
   const gstAmount = (totalPrice * 0.02).toFixed(2);
@@ -22,7 +19,6 @@ const Cart = () => {
   const [pincode, setPincode] = useState('');
   const [village, setVillage] = useState('');
   const [pinError, setPinError] = useState('');
-
   const [address, setAddress] = useState('');
   const [isEditing, setIsEditing] = useState(true);
 
@@ -62,46 +58,36 @@ const Cart = () => {
       <h1 className="text-4xl font-bold mb-8 text-gray-800">🛒 Your Cart</h1>
 
       <div className="grid md:grid-cols-3 gap-8">
-        {/* Left: Cart Items */}
+        {/* Cart Items */}
         <div className="md:col-span-2 space-y-6 overflow-y-auto max-h-[70vh] pr-2">
           {cartEntries.length === 0 ? (
-            <p className="text-lg text-gray-600">Your cart is empty.</p>
+            <p>Your cart is empty.</p>
           ) : (
             cartEntries.map(([productId, quantity]) => {
-              const product = products.find((p) => p.id === parseInt(productId));
-
+              const product = products.find((p) => p._id === productId);
               if (!product) return null;
 
               return (
-                <div
-                  key={productId}
-                  className="flex items-center gap-4 p-4 border rounded-xl shadow-sm hover:shadow-md transition"
-                >
-                  <img
-                    src={product.images}
-                    alt={product.name}
-                    className="w-24 h-24 rounded-lg object-cover border"
-                  />
+                <div key={productId} className="flex items-center gap-4 p-4 border rounded-xl">
+                  <img  src={(product.images && product.images.length > 0) ? product.images[0] : 'fallback-image.jpg'} className="w-24 h-24 rounded" />
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-800">{product.name}</h3>
-                    <p className="text-gray-500 text-sm">Category: {product.category}</p>
-                    <p className="text-indigo-600 font-medium text-lg mt-1">
+                    <h3 className="text-xl font-semibold">{product.name}</h3>
+                    <p className="text-indigo-600 font-medium mt-1">
                       ₹{product.offerPrice}{' '}
-                      <span className="text-gray-400 line-through ml-1 text-sm">
-                        ₹{product.price}
-                      </span>
+                      <span className="line-through text-gray-400 ml-1">₹{product.price}</span>
                     </p>
                     <div className="flex items-center gap-3 mt-3">
                       <button
-                        onClick={() => handleRemoveFromCart(product)}
-                        className="w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center"
+                        onClick={() => handleRemoveFromCart(product._id)}
+                        className="w-8 h-8 bg-red-500 text-white rounded-full"
+                        disabled={quantity === 1}
                       >
                         -
                       </button>
-                      <span className="text-lg font-medium">{quantity}</span>
+                      <span>{quantity}</span>
                       <button
                         onClick={() => addToCart(product)}
-                        className="w-8 h-8 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center"
+                        className="w-8 h-8 bg-green-500 text-white rounded-full"
                       >
                         +
                       </button>
@@ -113,18 +99,16 @@ const Cart = () => {
           )}
         </div>
 
-        {/* Right: Total & Address */}
-        <div className="sticky top-6 h-fit bg-white p-6 border rounded-xl shadow-lg flex flex-col gap-4">
-          <h2 className="text-2xl font-bold text-gray-800">Cart Summary</h2>
-
-          <div className="flex flex-col gap-2 text-gray-600">
+        {/* Summary */}
+        <div className="sticky top-6 bg-white p-6 border rounded-xl">
+          <h2 className="text-2xl font-bold">Cart Summary</h2>
+          <div className="mt-4">
             {cartEntries.map(([productId, quantity]) => {
-              const product = products.find((p) => p.id === parseInt(productId));
+              const product = products.find((p) => p._id === productId);
               if (!product) return null;
-
               return (
                 <div key={productId} className="flex justify-between">
-                  <span className="font-medium">{product.name}</span>
+                  <span>{product.name}</span>
                   <span>
                     ₹{product.offerPrice} × {quantity}
                   </span>
@@ -133,76 +117,64 @@ const Cart = () => {
             })}
           </div>
 
-          <div className="border-t pt-4 mt-2 flex justify-between text-lg font-semibold text-gray-800">
-            <span>Total:</span>
-            <span>₹{totalPrice}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Shipping:</span>
-            <span className="text-green-600 font-medium">Free</span>
-          </div>
-          <div className="flex justify-between">
-            <span>GST (2%):</span>
-            <span>₹{gstAmount}</span>
-          </div>
-          <div className="border-t pt-3 mt-2 flex justify-between text-lg font-semibold text-gray-800">
-            <span>Total Amount:</span>
-            <span>₹{grandTotal}</span>
+          <div className="mt-4 border-t pt-2">
+            <div className="flex justify-between font-semibold">
+              <span>Total:</span>
+              <span>₹{totalPrice}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Shipping:</span>
+              <span className="text-green-600">Free</span>
+            </div>
+            <div className="flex justify-between">
+              <span>GST (2%):</span>
+              <span>₹{gstAmount}</span>
+            </div>
+            <div className="flex justify-between font-semibold mt-2">
+              <span>Total Amount:</span>
+              <span>₹{grandTotal}</span>
+            </div>
           </div>
 
-          {/* Pincode Input */}
-          <div>
-            <label className="font-medium text-gray-700">Pincode</label>
+          {/* Pincode, Address */}
+          <div className="mt-4">
             <input
               type="text"
               value={pincode}
               onChange={handlePincodeChange}
-              className="mt-1 w-full border rounded px-3 py-2"
               placeholder="6-digit pincode"
               maxLength={6}
+              className="w-full border px-3 py-2 rounded mb-2"
             />
-            {pinError && <p className="text-red-500 text-sm mt-1">{pinError}</p>}
-          </div>
-
-          {/* Village */}
-          <div>
-            <label className="font-medium text-gray-700">Village</label>
+            {pinError && <p className="text-red-500 text-sm">{pinError}</p>}
             <input
               type="text"
               value={village}
               readOnly
-              className="mt-1 w-full border rounded px-3 py-2 bg-gray-100"
-              placeholder="Village name auto-fetched"
+              placeholder="Village"
+              className="w-full border px-3 py-2 rounded bg-gray-100 mb-2"
             />
-          </div>
-
-          {/* Address */}
-          <div>
-            <label className="font-medium text-gray-700">Address</label>
             <textarea
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               readOnly={!isEditing}
-              className={`mt-1 w-full border rounded px-3 py-2 ${
-                isEditing ? 'bg-white' : 'bg-gray-100'
-              }`}
-              placeholder="Enter delivery address"
               rows={3}
+              placeholder="Enter delivery address"
+              className={`w-full border px-3 py-2 rounded ${isEditing ? 'bg-white' : 'bg-gray-100'}`}
             />
             <button
               onClick={toggleEdit}
-              className="mt-2 text-sm text-indigo-600 hover:underline font-medium"
+              className="text-indigo-600 mt-1 text-sm font-medium"
             >
               {isEditing ? 'Save Address' : 'Edit Address'}
             </button>
           </div>
+
           <Link to="/payment">
-  <div className="mt-4">
-    <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg text-lg font-medium transition">
-      Proceed to Checkout
-    </button>
-  </div>
-</Link>
+            <button className="w-full mt-4 bg-indigo-600 text-white py-3 rounded text-lg">
+              Proceed to Checkout
+            </button>
+          </Link>
         </div>
       </div>
     </div>

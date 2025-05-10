@@ -10,6 +10,7 @@ import LoginModal from './LoginModal';
 const Nav = () => {
   const {
     searchTerm,
+    cartItems,
     setSearchTerm,
     totalCartItems,
     isLoggedIn,
@@ -20,6 +21,8 @@ const Nav = () => {
     handleLogout
   } = useAppContext();
 
+  const cartItemCount = Object.values(cartItems).reduce((sum, qty) => sum + qty, 0);
+  //const cartCount = Object.values(cartItems).reduce((total, qty) => total + qty, 0);
   const [click, setClick] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [open, setOpen] = useState(false);
@@ -60,7 +63,7 @@ const Nav = () => {
             <Link to="/home" className="hover:text-indigo-600">Home</Link>
             <Link to="/allproducts" className="hover:text-indigo-600">All Products</Link>
             <Link to="/about" className="hover:text-indigo-600">About</Link>
-            <Link to="/contact" className="hover:text-indigo-600">Contact</Link>
+            {/* <Link to="/contact" className="hover:text-indigo-600">Contact</Link> */}
 
             {/* Search */}
             <div className="flex items-center border border-gray-300 rounded-full overflow-hidden px-2">
@@ -78,27 +81,30 @@ const Nav = () => {
 
             {/* Cart */}
             <Link to="/cartItems" className="text-2xl text-indigo-600 hover:text-indigo-800 relative">
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {totalCartItems}
-              </span>
+
               <FaShoppingCart />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartItemCount}
+                </span>
+              )}
             </Link>
 
             {/* Profile / Login */}
             {isLoggedIn ? (
               <div className="relative group" ref={profileRef}>
                 <button className="flex items-center gap-2 focus:outline-none">
-                {userImage ? (
-        <img
-       src={userImage} alt="User"
+                  {userImage ? (
+                    <img
+                      src={userImage} alt="User"
 
-        onError={() => console.log("Image failed to load:", userImage)}
-          
-          className="w-10 h-10 rounded-full object-cover border border-gray-300"
-        />
-      ) : (
-        <FaUserCircle size={32} />
-      )}
+                      onError={() => console.log("Image failed to load:", userImage)}
+
+                      className="w-10 h-10 rounded-full object-cover border border-gray-300"
+                    />
+                  ) : (
+                    <FaUserCircle size={32} />
+                  )}
                 </button>
                 <div className="absolute right-0 mt-2 w-40 bg-white text-black rounded shadow-md hidden group-hover:block z-50 border border-gray-200">
                   <div className="px-4 py-2 border-b border-gray-300 text-sm font-medium capitalize">
@@ -164,7 +170,7 @@ const Nav = () => {
             <Link to="/home" className="block text-lg font-medium hover:text-indigo-400" onClick={handleClick}>Home</Link>
             <Link to="/allproducts" className="block text-lg font-medium hover:text-indigo-400" onClick={handleClick}>All Products</Link>
             <Link to="/about" className="block text-lg font-medium hover:text-indigo-400" onClick={handleClick}>About</Link>
-            <Link to="/contact" className="block text-lg font-medium hover:text-indigo-400" onClick={handleClick}>Contact</Link>
+            {/* <Link to="/contact" className="block text-lg font-medium hover:text-indigo-400" onClick={handleClick}>Contact</Link> */}
 
             {/* Mobile Search */}
             <div className="flex items-center border border-gray-300 rounded-full overflow-hidden px-2 bg-white">
@@ -205,7 +211,7 @@ const Nav = () => {
                 </button>
 
                 {open && (
-                  <div className="mt-2 w-full bg-white border border-gray-200 rounded shadow-lg z-50">
+                  <div className="mt-2 w-full bg-slate-900 border border-gray-200 rounded shadow-lg z-50">
                     <button
                       onClick={() => {
                         setShowModal(true);

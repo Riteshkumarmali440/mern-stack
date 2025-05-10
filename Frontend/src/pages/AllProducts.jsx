@@ -31,14 +31,14 @@ const AllProducts = () => {
           ) : (
             filteredProducts.map((product) => (
               <motion.div
-                key={product.id}
+                key={product._id}
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 300 }}
                 className="rounded-2xl overflow-hidden shadow-lg bg-white group hover:shadow-2xl duration-300"
               >
-                <Link to={`/product/${product.id}`}>
+                <Link to={`/product/${product._id}`}>
                   <img
-                   src={(product.images && product.images.length > 0) ? product.images[0] : 'fallback-image.jpg'}
+                    src={(product.images && product.images.length > 0) ? product.images[0] : 'fallback-image.jpg'}
                     alt={product.name}
                     className="w-full h-50 object-cover object-center group-hover:opacity-90 transition duration-300"
                   />
@@ -46,7 +46,6 @@ const AllProducts = () => {
                 </Link>
 
                 <div className="p-4">
-                <h3 className="text-xl font-semibold text-gray-800 mb-1">id{product.id}</h3>
                   <h3 className="text-xl font-semibold text-gray-800 mb-1">{product.name}</h3>
                   <p className="text-gray-600 text-sm mb-2">₹ {product.price}</p>
 
@@ -61,7 +60,7 @@ const AllProducts = () => {
                   </div>
 
                   {/* Add / Increment / Decrement buttons */}
-                  {cartItems[product.id] ? (
+                  {cartItems[product._id] ? (
                     <div className="flex items-center justify-between mt-3">
                       <button
                         onClick={() => handleRemoveFromCart(product)}
@@ -69,7 +68,7 @@ const AllProducts = () => {
                       >
                         -
                       </button>
-                      <span className="text-lg font-semibold">{cartItems[product.id]}</span>
+                      <span className="text-lg font-semibold">{cartItems[product._id]}</span>
                       <button
                         onClick={() => addToCart(product)}
                         className="px-3 py-1 bg-green-500 text-white rounded-full"
@@ -85,6 +84,7 @@ const AllProducts = () => {
                       Add to Cart
                     </button>
                   )}
+
                 </div>
               </motion.div>
             ))

@@ -26,8 +26,8 @@ const SellerLogin = () => {
       console.log("response",response)
       toast.success('Seller login successful');
       localStorage.setItem('sellerToken', token);
-// Optionally also store user info if you need it later
-localStorage.setItem('sellerInfo', JSON.stringify(user));
+      // Optionally also store user info if you need it later
+      localStorage.setItem('sellerInfo', JSON.stringify(user));
       navigate('/seller/dashboard');
       handleLogin(name, avatar);
 

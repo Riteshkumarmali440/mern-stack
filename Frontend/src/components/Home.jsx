@@ -24,7 +24,7 @@ const Home = () => {
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
-
+  
   return (
     <>
       <div className="min-h-screen">

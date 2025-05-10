@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const AddProduct = () => {
   const [product, setProduct] = useState({
@@ -9,6 +9,15 @@ const AddProduct = () => {
     price: '',
     offerPrice: ''
   });
+
+  const [products, setProducts] = useState([]);
+  const [editingProductId, setEditingProductId] = useState(null);
+
+ 
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const handleInputChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -41,6 +50,12 @@ const AddProduct = () => {
       formData.append('price', product.price);
       formData.append('offerPrice', product.offerPrice);
       formData.append('instock', true); // or set dynamically if needed
+      // const sellerInfo = JSON.parse(localStorage.getItem('sellerInfo'));
+      // if (!sellerInfo?.id) {
+      //   alert('Seller not authenticated!');
+      //   return;
+      // }
+      // formData.append('seller', sellerInfo.id);
       
       const response = await fetch('http://localhost:5000/api/product/add-product', {
         
@@ -50,12 +65,94 @@ const AddProduct = () => {
   
       const result = await response.json();
       console.log('Product Added:', result);
-  
+      fetchProducts();
     } catch (error) {
       console.error('Error adding product:', error);
     }
   };
   
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/getproduct/get-products');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/product/delete-product/${id}`, {
+        method: 'DELETE'
+      });
+  
+      if (response.ok) {
+        alert('Product deleted successfully!');
+        fetchProducts();
+      } else {
+        alert('Failed to delete product.');
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
+  };
+  
+
+  const handleEdit = (prod) => {
+    setEditingProductId(prod._id);
+    setProduct({
+      images: [],
+      name: prod.name,
+      description: prod.description,
+      category: prod.category,
+      price: prod.price,
+      offerPrice: prod.offerPrice
+    });
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const updatedProduct = {
+        name: product.name,
+        description: product.description,
+        category: product.category,
+        price: product.price,
+        offerPrice: product.offerPrice,
+        instock: true
+      };
+  
+      const response = await fetch(`http://localhost:5000/api/product/update-product/${editingProductId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedProduct)
+      });
+  
+      if (response.ok) {
+        alert('Product updated successfully!');
+        setEditingProductId(null);
+        setProduct({
+          images: [],
+          name: '',
+          description: '',
+          category: '',
+          price: '',
+          offerPrice: ''
+        });
+        fetchProducts();
+      } else {
+        alert('Failed to update product.');
+      }
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
+  };
+  
+
 
   return (
     <div className="py-10 flex flex-col justify-between bg-white">
@@ -127,7 +224,7 @@ const AddProduct = () => {
             className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
           >
             <option value="">Select Category</option>
-            {['Electronics', 'Clothing', 'Accessories'].map((item, index) => (
+            {['Vegetables', 'Fruits', 'Grocery'].map((item, index) => (
               <option key={index} value={item}>{item}</option>
             ))}
           </select>
@@ -162,14 +259,68 @@ const AddProduct = () => {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="px-8 py-2.5 bg-indigo-500 hover:bg-indigo-600 transition text-white font-medium rounded"
-        >
-          ADD
-        </button>
+        <div className="flex gap-4">
+  {!editingProductId && (
+    <button
+      type="button"
+      onClick={handleSubmit}
+      className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
+    >
+      Add Product
+    </button>
+  )}
+
+  {editingProductId && (
+    <button
+      type="button"
+      onClick={handleUpdate}
+      className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition duration-200"
+    >
+      Update Product
+    </button>
+  )}
+</div>
       </form>
+      <div className="mt-10">
+        <h2 className="text-xl font-bold mb-4">Your Products</h2>
+        <table className="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th className="py-2">Name</th>
+              <th className="py-2">Category</th>
+              <th className="py-2">Price</th>
+              <th className="py-2">Offer Price</th>
+              <th className="py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((prod) => (
+              <tr key={prod._id}>
+                <td className="py-2">{prod.name}</td>
+                <td className="py-2">{prod.category}</td>
+                <td className="py-2">{prod.price}</td>
+                <td className="py-2">{prod.offerPrice}</td>
+                <td className="py-2">
+                  <button
+                    onClick={() => handleEdit(prod)}
+                    className="bg-yellow-500 text-white px-4 py-1 rounded mr-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(prod._id)}
+                    className="bg-red-500 text-white px-4 py-1 rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
+    
   );
 };
 

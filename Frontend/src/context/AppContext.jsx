@@ -14,15 +14,6 @@ export const AppProvider = ({ children }) => {
   const [name, setName] = useState(null);
   const [userImage, setUserImage] = useState(null);
   const [products, setProducts] = useState([]);
- 
-  // const fetchProducts = async () => {
-  //   try {
-  //     const res = await axios.get('http://localhost:5000/api/getproduct/get-products');
-  //     setProducts(res.data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch products:', error);
-  //   }
-  // };
 
   const fetchProducts = async () => {
     try {
@@ -62,27 +53,24 @@ export const AppProvider = ({ children }) => {
   
 
   const addToCart = (product) => {
-    setCartItems((prevItems) => {
-      const newItems = { ...prevItems };
-      if (newItems[product.id]) {
-        newItems[product.id] += 1; // Increment quantity if the item is already in the cart
-      } else {
-        newItems[product.id] = 1; // Add the item to the cart if it's not already there
-      }
-      return newItems;
+    setCartItems((prev) => {
+      const productId = product._id;
+      const quantity = prev[productId] || 0;
+      return { ...prev, [productId]: quantity + 1 };
     });
   };
-  
 
-  const handleRemoveFromCart = (product) => {
-    setCartItems((prevItems) => {
-      const newItems = { ...prevItems };
-      if (newItems[product.id] > 1) {
-        newItems[product.id] -= 1; // Decrement quantity if it's greater than 1
+  const handleRemoveFromCart = (productId) => {
+    setCartItems((prev) => {
+      if (!prev[productId]) return prev;
+      const updatedQuantity = prev[productId] - 1;
+      const updatedCart = { ...prev };
+      if (updatedQuantity > 0) {
+        updatedCart[productId] = updatedQuantity;
       } else {
-        delete newItems[product.id]; // Remove the item if quantity is 1
+        delete updatedCart[productId];
       }
-      return newItems;
+      return updatedCart;
     });
   };
 
@@ -90,7 +78,7 @@ export const AppProvider = ({ children }) => {
 //     return cartItems.reduce((acc, item) => acc + item.quantity, 0);
 //   }, [cartItems]);
 
-const totalCartItems = Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
+//const totalCartItems = Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
 
 
 
@@ -114,7 +102,7 @@ const totalCartItems = Object.values(cartItems).reduce((total, quantity) => tota
         searchTerm,
         setSearchTerm,
         cartItems,
-        totalCartItems,
+        
         handleRemoveFromCart,
         isLoggedIn,
         name,
