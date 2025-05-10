@@ -30,13 +30,13 @@ const LoginModal = ({ closeModal }) => {
       formData.append('isAdmin', isAdmin);
       if (avatar) formData.append('avatar', avatar);
   
-      apiUrl = 'http://localhost:5000/api/users/register';
+      apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/users/register`;
       payload = formData;
       headers = { 'Content-Type': 'multipart/form-data' };
       toast.success("Registration successfull....");
     } else {
       // login — send JSON
-      apiUrl = 'http://localhost:5000/api/users/login';
+      apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/users/login`;
       payload = { email, password };
       headers = { 'Content-Type': 'application/json' };
     }
