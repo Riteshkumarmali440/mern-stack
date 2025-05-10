@@ -16,7 +16,7 @@ const SellerLogin = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/seller/sellerLogin',
+        'https://ekart-backend-o1fr.onrender.com/api/seller/sellerLogin',
         { email, password }, // Key line: isSeller flag
         { headers: { 'Content-Type': 'application/json' } }
       );
