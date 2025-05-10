@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import axiosInstance from "axios";
-
+import backendURL  from '../config';
 
 const AppContext = createContext();
 
@@ -17,7 +17,7 @@ export const AppProvider = ({ children }) => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axiosInstance.get('http://localhost:5000/api/getproduct/get-products');
+      const res = await axiosInstance.get(`${backendURL}/api/getproduct/get-products`);
       console.log(res.data); // Log the response to check the structure
       if (Array.isArray(res.data)) {
         setProducts(res.data); // Set the products array if the response is correct
