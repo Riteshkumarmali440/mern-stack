@@ -120,7 +120,6 @@ useEffect(() => {
     setCartItems([]);
     localStorage.removeItem("name");
     localStorage.removeItem('userInfo');
-    localStorage.removeItem('cartItems');
   };
 
   return (
