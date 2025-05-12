@@ -13,7 +13,7 @@ const AddProduct = () => {
   const [products, setProducts] = useState([]);
   const [editingProductId, setEditingProductId] = useState(null);
 
- 
+
 
   useEffect(() => {
     fetchProducts();
@@ -34,7 +34,7 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const formData = new FormData();
       product.images.forEach((image, index) => {
@@ -43,7 +43,7 @@ const AddProduct = () => {
           formData.append('images', file);
         }
       });
-  
+
       formData.append('name', product.name);
       formData.append('description', product.description);
       formData.append('category', product.category);
@@ -56,13 +56,13 @@ const AddProduct = () => {
       //   return;
       // }
       // formData.append('seller', sellerInfo.id);
-      
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/add-product`, {
-        
+
         method: 'POST',
         body: formData
       });
-  
+
       const result = await response.json();
       console.log('Product Added:', result);
       fetchProducts();
@@ -70,7 +70,7 @@ const AddProduct = () => {
       console.error('Error adding product:', error);
     }
   };
-  
+
   const fetchProducts = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getproduct/get-products`);
@@ -86,7 +86,7 @@ const AddProduct = () => {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/delete-product/${id}`, {
         method: 'DELETE'
       });
-  
+
       if (response.ok) {
         alert('Product deleted successfully!');
         fetchProducts();
@@ -97,7 +97,7 @@ const AddProduct = () => {
       console.error('Error deleting product:', error);
     }
   };
-  
+
 
   const handleEdit = (prod) => {
     setEditingProductId(prod._id);
@@ -113,7 +113,7 @@ const AddProduct = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-  
+
     try {
       const updatedProduct = {
         name: product.name,
@@ -123,7 +123,7 @@ const AddProduct = () => {
         offerPrice: product.offerPrice,
         instock: true
       };
-  
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/update-product/${editingProductId}`, {
         method: 'PUT',
         headers: {
@@ -131,7 +131,7 @@ const AddProduct = () => {
         },
         body: JSON.stringify(updatedProduct)
       });
-  
+
       if (response.ok) {
         alert('Product updated successfully!');
         setEditingProductId(null);
@@ -151,12 +151,12 @@ const AddProduct = () => {
       console.error('Error updating product:', error);
     }
   };
-  
+
 
 
   return (
     <div className="py-10 flex flex-col justify-between bg-white">
-       <div className="px-2 py-2 text-2xl font-bold text-indigo-600">Add Product</div>
+      <div className="px-2 py-2 text-2xl font-bold text-indigo-600">Add Product</div>
 
       <form onSubmit={handleSubmit} className="md:p-10 p-4 space-y-5 max-w-lg">
         <div>
@@ -260,67 +260,70 @@ const AddProduct = () => {
         </div>
 
         <div className="flex gap-4">
-  {!editingProductId && (
-    <button
-      type="button"
-      onClick={handleSubmit}
-      className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
-    >
-      Add Product
-    </button>
-  )}
+          {!editingProductId && (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
+            >
+              Add Product
+            </button>
+          )}
 
-  {editingProductId && (
-    <button
-      type="button"
-      onClick={handleUpdate}
-      className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition duration-200"
-    >
-      Update Product
-    </button>
-  )}
-</div>
+          {editingProductId && (
+            <button
+              type="button"
+              onClick={handleUpdate}
+              className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition duration-200"
+            >
+              Update Product
+            </button>
+          )}
+        </div>
       </form>
       <div className="mt-10">
         <h2 className="text-xl font-bold mb-4">Your Products</h2>
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th className="py-2">Name</th>
-              <th className="py-2">Category</th>
-              <th className="py-2">Price</th>
-              <th className="py-2">Offer Price</th>
-              <th className="py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((prod) => (
-              <tr key={prod._id}>
-                <td className="py-2">{prod.name}</td>
-                <td className="py-2">{prod.category}</td>
-                <td className="py-2">{prod.price}</td>
-                <td className="py-2">{prod.offerPrice}</td>
-                <td className="py-2">
-                  <button
-                    onClick={() => handleEdit(prod)}
-                    className="bg-yellow-500 text-white px-4 py-1 rounded mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(prod._id)}
-                    className="bg-red-500 text-white px-4 py-1 rounded"
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="overflow-x-auto"> {/* Added scrollable container */}
+          <table className="min-w-full bg-white table-auto">
+            <thead>
+              <tr>
+                <th className="py-2 text-left">Name</th>
+                <th className="py-2 text-left">Category</th>
+                <th className="py-2 text-left">Price</th>
+                <th className="py-2 text-left">Offer Price</th>
+                <th className="py-2 text-left">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products.map((prod) => (
+                <tr key={prod._id} className="border-t">
+                  <td className="py-2 px-2">{prod.name}</td>
+                  <td className="py-2 px-2">{prod.category}</td>
+                  <td className="py-2 px-2">{prod.price}</td>
+                  <td className="py-2 px-2">{prod.offerPrice}</td>
+                  <td className="py-2 px-2 flex flex-wrap gap-2">
+                    <button
+                      onClick={() => handleEdit(prod)}
+                      className="bg-yellow-500 text-white px-4 py-1 rounded mr-2"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(prod._id)}
+                      className="bg-red-500 text-white px-4 py-1 rounded"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
+
     </div>
-    
+
   );
 };
 
