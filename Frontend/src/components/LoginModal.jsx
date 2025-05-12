@@ -61,7 +61,7 @@ const LoginModal = ({ closeModal }) => {
           _id,
           avatar: `http://localhost:5000/uploads/${avatar}`
         }));
-        handleLogin(name, avatar);  
+        handleLogin(name, avatar, email);  
         
       } else {
         toast.success('Signup Successful!');

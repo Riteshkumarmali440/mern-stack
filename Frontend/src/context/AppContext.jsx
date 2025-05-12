@@ -15,6 +15,7 @@ export const AppProvider = ({ children }) => {
   const [userImage, setUserImage] = useState(null);
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState(null);
+  const [userEmail, setUserEmail] = useState("");
 
   const fetchProducts = async () => {
     try {
@@ -106,10 +107,26 @@ useEffect(() => {
   }
 }, []);
 
+const loadCartFromStorage = (email) => {
+  const storedCart = localStorage.getItem(`cart_${email}`);
+  if (storedCart) {
+    setCartItems(JSON.parse(storedCart));
+  } else {
+    setCartItems({});
+  }
+};
 
-  const handleLogin = (name, avatar) => {
+useEffect(() => {
+  if (isLoggedIn && userEmail) {
+    localStorage.setItem(`cart_${userEmail}`, JSON.stringify(cartItems));
+  }
+}, [cartItems, isLoggedIn, userEmail]);
+
+  const handleLogin = (name, avatar, email) => {
     setIsLoggedIn(true);
     setName(name);
+    setUserEmail(email);
+    loadCartFromStorage(email);
   setUserImage(`http://localhost:5000/uploads/${avatar}`);
  
   };
@@ -120,6 +137,8 @@ useEffect(() => {
    // setCartItems([]);
     localStorage.removeItem("name");
     localStorage.removeItem('userInfo');
+    setUserEmail("");
+    setCartItems({});
   };
 
   return (
