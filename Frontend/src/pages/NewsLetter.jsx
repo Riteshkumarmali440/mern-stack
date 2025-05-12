@@ -15,7 +15,7 @@ const NewsLetter = () => {
       }
   
       try {
-        const response = await axios.post('http://localhost:5000/api/send-email', 
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/send-email`, 
           { email }, 
           {
             headers: {

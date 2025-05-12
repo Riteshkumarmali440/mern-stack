@@ -57,7 +57,7 @@ const AddProduct = () => {
       // }
       // formData.append('seller', sellerInfo.id);
       
-      const response = await fetch('http://localhost:5000/api/product/add-product', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/add-product`, {
         
         method: 'POST',
         body: formData
@@ -73,7 +73,7 @@ const AddProduct = () => {
   
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/getproduct/get-products');
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getproduct/get-products`);
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -83,7 +83,7 @@ const AddProduct = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/product/delete-product/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/delete-product/${id}`, {
         method: 'DELETE'
       });
   
@@ -124,7 +124,7 @@ const AddProduct = () => {
         instock: true
       };
   
-      const response = await fetch(`http://localhost:5000/api/product/update-product/${editingProductId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/update-product/${editingProductId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

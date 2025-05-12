@@ -10,7 +10,7 @@ const ProductList = () => {
     const handleStockChange = async (productId, value) => {
         try {
             console.log("ID",productId);
-          const res = await fetch(`http://localhost:5000/api/product/update-stock/${productId}`, {
+          const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/update-stock/${productId}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
