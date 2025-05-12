@@ -117,7 +117,7 @@ useEffect(() => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setName('');
-    setCartItems([]);
+   // setCartItems([]);
     localStorage.removeItem("name");
     localStorage.removeItem('userInfo');
   };
