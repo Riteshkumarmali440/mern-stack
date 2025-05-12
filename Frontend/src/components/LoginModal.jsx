@@ -45,14 +45,24 @@ const LoginModal = ({ closeModal }) => {
       const response = await axios.post(apiUrl, payload, { headers });
   
       if (mode === 'login') {
-        const { name, avatar } = response.data.user;
+        const { name, avatar, _id, email } = response.data.user;
+       
         setName(name);
         //setUserImage({ name, avatar,});
         console.log('Name from DB:', name);
         console.log('Image from DB:', avatar);
-        
+        console.log('email from DB:', email);
+        console.log('ID from DB:', _id);
+     
         toast.success('Login Successful!');
+        localStorage.setItem('userInfo', JSON.stringify({
+          name,
+          email,
+          _id,
+          avatar: `http://localhost:5000/uploads/${avatar}`
+        }));
         handleLogin(name, avatar);  
+        
       } else {
         toast.success('Signup Successful!');
       }

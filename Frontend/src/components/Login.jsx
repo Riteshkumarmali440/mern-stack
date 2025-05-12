@@ -1,90 +1,180 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { useAppContext } from '../context/AppContext';
+import axios from 'axios';
 
-const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState(true)
+const Login = ({ closeModal }) => {
+  const [mode, setMode] = useState('login'); // 'login' or 'signup'
+ const [name, setName] = useState('');
+  //const [name, setNameLocal] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [avatar, setAvatar] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const { handleLogin,  setUserImage } = useAppContext();
 
-  const toggleForm = () => {
-    setIsLogin(!isLogin)
-  }
-
+  const handleAction = async (e) => {
+    e.preventDefault();
+  
+    let apiUrl;
+    let payload;
+    let headers;
+  
+    if (mode === 'signup') {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('address', address);
+      formData.append('password', password);
+      formData.append('isAdmin', isAdmin);
+      if (avatar) formData.append('avatar', avatar);
+  
+      apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/users/register`;
+      payload = formData;
+      headers = { 'Content-Type': 'multipart/form-data' };
+      toast.success("Registration successfull....");
+    } else {
+      // login — send JSON
+      apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/users/login`;
+      payload = { email, password };
+      headers = { 'Content-Type': 'application/json' };
+    }
+  
+    try {
+      const response = await axios.post(apiUrl, payload, { headers });
+  
+      if (mode === 'login') {
+        const { name, avatar } = response.data.user;
+        setName(name);
+        //setUserImage({ name, avatar,});
+        console.log('Name from DB:', name);
+        console.log('Image from DB:', avatar);
+        
+        toast.success('Login Successful!');
+        handleLogin(name, avatar);  
+        setIsLoggedIn(false);
+        navigate('/allproducts');
+      } else {
+        toast.success('Signup Successful!');
+      }
+      closeModal();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'An error occurred');
+    }
+  };
+  
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <form className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white shadow-lg">
-        <h1 className="text-gray-900 text-3xl mt-10 font-medium">
-          {isLogin ? 'Login' : 'Sign Up'}
-        </h1>
-        <p className="text-gray-500 text-sm mt-2">
-          {isLogin ? 'Please sign in to continue' : 'Create a new account'}
-        </p>
+    <>
+      <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg w-96 p-6 shadow-lg relative">
+          <button
+            onClick={closeModal}
+            className="absolute top-2 right-3 text-2xl text-gray-600 hover:text-red-600"
+          >
+            ×
+          </button>
 
-        {/* Email input */}
-        <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
-          <input
-            type="email"
-            placeholder="Email"
-            className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-            required
-          />
-        </div>
+          <div className="flex justify-center mb-6">
+            <button
+              onClick={() => setMode('login')}
+              className={`px-4 py-2 rounded-l ${
+                mode === 'login' ? 'bg-indigo-600 text-white' : 'bg-gray-200'
+              }`}
+            >
+              Login
+            </button>
+            <button
+              onClick={() => setMode('signup')}
+              className={`px-4 py-2 rounded-r ${
+                mode === 'signup' ? 'bg-indigo-600 text-white' : 'bg-gray-200'
+              }`}
+            >
+              Signup
+            </button>
+          </div>
 
-        {/* Password input */}
-        <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
-          <input
-            type="password"
-            placeholder="Password"
-            className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
-            required
-          />
-        </div>
+          <h2 className="text-2xl mb-4 font-semibold text-center capitalize">
+            {mode}
+          </h2>
 
-        {/* Confirm password for SignUp only */}
-        {!isLogin && (
-          <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
+          <form onSubmit={handleAction} className="space-y-4">
+            {mode === 'signup' && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 px-4 py-2 rounded outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+                <input
+                  type="text"
+                  placeholder="Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  required
+                  className="w-full border border-gray-300 px-4 py-2 rounded outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </>
+            )}
+
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full border border-gray-300 px-4 py-2 rounded outline-none focus:ring-2 focus:ring-indigo-500"
+            />
             <input
               type="password"
-              placeholder="Confirm Password"
-              className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
+              className="w-full border border-gray-300 px-4 py-2 rounded outline-none focus:ring-2 focus:ring-indigo-500"
             />
-          </div>
-        )}
 
-        {/* Forgot password link */}
-        {isLogin && (
-          <div className="mt-5 text-left text-indigo-500">
-            <a className="text-sm" href="#">Forgot password?</a>
-          </div>
-        )}
+            {mode === 'signup' && (
+              <>
+                <input
+                  type="file"
+                  onChange={(e) => setAvatar(e.target.files[0])}
+                  className="w-full border border-gray-300 px-4 py-2 rounded outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={isAdmin}
+                    onChange={() => setIsAdmin(!isAdmin)}
+                  />
+                  Is Admin
+                </label>
+              </>
+            )}
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="mt-5 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
-        >
-          {isLogin ? 'Login' : 'Sign Up'}
-        </button>
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+            >
+              {mode === 'login' ? 'Login' : 'Signup'}
+            </button>
+          </form>
+        </div>
+      </div>
+      <ToastContainer
+        position="top-left"
+        autoClose={3500}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        draggable={true}
+      />
+    </>
+  );
+};
 
-        {/* Toggle link */}
-        <p className="text-gray-500 text-sm mt-4 mb-10">
-          {isLogin ? (
-            <>
-              Don’t have an account?{' '}
-              <button type="button" onClick={toggleForm} className="text-indigo-500 hover:underline">
-                Sign up
-              </button>
-            </>
-          ) : (
-            <>
-              Already have an account?{' '}
-              <button type="button" onClick={toggleForm} className="text-indigo-500 hover:underline">
-                Login
-              </button>
-            </>
-          )}
-        </p>
-      </form>
-    </div>
-  )
-}
-
-export default AuthPage
+export default Login;

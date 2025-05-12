@@ -14,6 +14,7 @@ export const AppProvider = ({ children }) => {
   const [name, setName] = useState(null);
   const [userImage, setUserImage] = useState(null);
   const [products, setProducts] = useState([]);
+  const [user, setUser] = useState(null);
 
   const fetchProducts = async () => {
     try {
@@ -53,6 +54,18 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
+  useEffect(() => {
+    // Get user info and cart items from localStorage on load
+    const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+    const storedCartItems = JSON.parse(localStorage.getItem('cartItems'));
+
+    if (storedUserInfo) {
+      setUser(storedUserInfo);
+    }
+    if (storedCartItems) {
+      setCartItems(storedCartItems);
+    }
+  }, []);
 
   
 
@@ -84,19 +97,30 @@ export const AppProvider = ({ children }) => {
 
 //const totalCartItems = Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
 
+useEffect(() => {
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  if (userInfo) {
+    setIsLoggedIn(true);
+    setName(userInfo.name);
+    setUserImage(userInfo.avatar);
+  }
+}, []);
 
 
   const handleLogin = (name, avatar) => {
     setIsLoggedIn(true);
     setName(name);
   setUserImage(`http://localhost:5000/uploads/${avatar}`);
-  localStorage.setItem("name", name); 
+ 
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setName('');
+    setCartItems([]);
     localStorage.removeItem("name");
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('cartItems');
   };
 
   return (

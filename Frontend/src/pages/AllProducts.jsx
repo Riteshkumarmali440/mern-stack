@@ -5,13 +5,28 @@ import { motion } from 'framer-motion';
 import { useAppContext } from '../context/AppContext';
 import { Star } from 'lucide-react';
 import Footer from './Footer';
+import { useNavigate } from 'react-router-dom';
+
 
 const AllProducts = () => {
-  const { products, searchTerm, addToCart, handleRemoveFromCart, cartItems } = useAppContext();
+  const { products, searchTerm, addToCart, handleRemoveFromCart, cartItems, setShowModal } = useAppContext();
 
   const filteredProducts = (Array.isArray(products) ? products : []).filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const navigate = useNavigate();
+
+  const handleAddToCart = (product) => {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  
+    if (userInfo) {
+      addToCart(product);
+    } else {
+      navigate('/login');
+    }
+  };
+  
 
   return (
     <>
@@ -78,7 +93,14 @@ const AllProducts = () => {
                     </div>
                   ) : (
                     <button
-                      onClick={() => addToCart(product)}
+                    onClick={() => {
+                      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+                      if (userInfo) {
+                        addToCart(product);
+                      } else {
+                        setShowModal(true);
+                      }
+                    }}
                       className="w-28 ml-auto block text-sm mt-3 bg-indigo-500 text-white py-1.5 rounded-lg hover:bg-indigo-600 transition"
                     >
                       Add to Cart
