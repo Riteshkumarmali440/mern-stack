@@ -122,11 +122,28 @@ useEffect(() => {
   }
 }, [cartItems, isLoggedIn, userEmail]);
 
+useEffect(() => {
+  const savedLogin = localStorage.getItem("isLoggedIn");
+  const savedEmail = localStorage.getItem("userEmail");
+  const savedName = localStorage.getItem("userName");
+
+  if (savedLogin === "true" && savedEmail) {
+    setIsLoggedIn(true);
+    setUserEmail(savedEmail);
+    setName(savedName || "");
+    loadCartFromStorage(savedEmail);
+  }
+}, []);
+
   const handleLogin = (name, avatar, email) => {
     setIsLoggedIn(true);
     setName(name);
     setUserEmail(email);
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userName", name);
     loadCartFromStorage(email);
+    
   setUserImage(`http://localhost:5000/uploads/${avatar}`);
  
   };
@@ -135,8 +152,11 @@ useEffect(() => {
     setIsLoggedIn(false);
     setName('');
    // setCartItems([]);
-    localStorage.removeItem("name");
-    localStorage.removeItem('userInfo');
+   localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userInfo"); 
+    localStorage.removeItem(`cart_${userEmail}`);
     setUserEmail("");
     setCartItems({});
   };
