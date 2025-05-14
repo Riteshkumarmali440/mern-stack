@@ -144,7 +144,7 @@ useEffect(() => {
     localStorage.setItem("userName", name);
     loadCartFromStorage(email);
     
-  setUserImage(`http://localhost:5000/uploads/${avatar}`);
+  setUserImage(`${import.meta.env.VITE_BACKEND_URL}/uploads/${avatar}`);
  
   };
 
